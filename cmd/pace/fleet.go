@@ -11,6 +11,7 @@ import (
 	"os"
 	"os/signal"
 	"path/filepath"
+	"strconv"
 	"strings"
 	"sync"
 	"syscall"
@@ -434,7 +435,10 @@ func (c *cli) fleetServe(args []string) int {
 		return exitUsage
 	}
 	allInterfaces := "pace fleet serve: refusing to listen on all interfaces; give a loopback or Tailscale address"
-	if ip := net.ParseIP(host); host == "" || ip != nil && ip.IsUnspecified() {
+	// Some resolvers accept a single integer as an IPv4 address. Reject
+	// numeric zero consistently before consulting the platform resolver.
+	number, parseErr := strconv.ParseUint(host, 0, 32)
+	if ip := net.ParseIP(host); host == "" || (parseErr == nil && number == 0) || (ip != nil && ip.IsUnspecified()) {
 		fmt.Fprintln(c.stderr, allInterfaces)
 		return exitUsage
 	}
@@ -444,7 +448,7 @@ func (c *cli) fleetServe(args []string) int {
 		return exitFail
 	}
 	if ta, ok := ln.Addr().(*net.TCPAddr); !ok || ta.IP.IsUnspecified() {
-		ln.Close() // a name such as "0" or "0x0" resolved to the wildcard address
+		ln.Close() // a hostname resolved to the wildcard address
 		fmt.Fprintln(c.stderr, allInterfaces)
 		return exitUsage
 	}
