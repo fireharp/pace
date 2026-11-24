@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.2.1](https://github.com/fireharp/pace/compare/v0.2.0...v0.2.1) (2026-11-24)
+
+
+### Bug Fixes
+
+* generate a valid PaceBar login agent on macOS ([eca96bc](https://github.com/fireharp/pace/commit/eca96bcedc027162918096defd60460bce495f53))
+
 ## [0.2.0](https://github.com/fireharp/pace/compare/v0.1.0...v0.2.0) (2026-11-24)
 
 
