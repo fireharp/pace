@@ -656,21 +656,27 @@ func (e *env) cmdTree(args []string) int {
 		}
 		done <- code
 	}()
+	var received os.Signal
 	select {
 	case code := <-done:
-		return code
-	case s := <-sigs:
-		// Forward to the children (they are in our process group anyway when
-		// the whole group is signalled), then die of the same signal.
+		// All children may exit before the parent reads a group signal.
+		// Stop delivery, then check for a signal already queued for us.
+		signal.Stop(sigs)
+		select {
+		case received = <-sigs:
+		default:
+			return code
+		}
+	case received = <-sigs:
 		for _, cmd := range cmds {
-			cmd.Process.Signal(s)
+			cmd.Process.Signal(received)
 		}
 		<-done
-		signal.Reset(s)
-		syscall.Kill(os.Getpid(), s.(syscall.Signal))
-		time.Sleep(time.Second)
-		return 1
 	}
+	signal.Reset(received)
+	syscall.Kill(os.Getpid(), received.(syscall.Signal))
+	time.Sleep(time.Second)
+	return 1
 }
 
 // ---- exit / ignore-term ----
