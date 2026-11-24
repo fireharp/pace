@@ -4,7 +4,7 @@ Pace keeps agent builds, tests, browsers, and models from exhausting your machin
 
 ## Quick setup
 
-One binary for macOS and Linux. The installer selects your architecture and checks the download.
+One installer for macOS and Linux. It verifies the download and, on a Mac, asks whether you want the PaceBar menu bar app.
 
 ```sh
 # Install the CLI
@@ -19,7 +19,7 @@ pace status
 pace run -- go test ./...
 ```
 
-Replace `go test ./...` with your own build or test command. To let Pace queue or stop heavy jobs, run `pace install --mode enforce`. Mac users can also [set up the menu bar app](#menu-bar-icon-macos).
+Replace `go test ./...` with your own build or test command. To let Pace queue or stop heavy jobs, run `pace install --mode enforce`. See [PaceBar setup](#menu-bar-icon-macos) for unattended installs.
 
 <details>
 <summary>Download a standalone binary</summary>
@@ -202,13 +202,15 @@ Peers are stored in `~/.config/pace/fleet.toml`. Add the same peers on each mach
 
 ### Menu bar icon (macOS)
 
-With the CLI installed, download and start PaceBar:
+The installer offers PaceBar in a Mac terminal. Answer `y` to install it in `~/Applications` and start it at login. Press Enter for the CLI alone. Unattended installs default to the CLI.
+
+To install PaceBar later or choose it in a script:
 
 ```sh
-curl -fsSLO https://github.com/fireharp/pace/releases/latest/download/PaceBar-macOS.zip
-unzip -o PaceBar-macOS.zip
-sh PaceBar/install.sh PaceBar/PaceBar.app
+curl -fsSL https://github.com/fireharp/pace/releases/latest/download/install.sh | sh -s -- --with-pacebar
 ```
+
+Use `--cli-only` to skip the question in a terminal. The [PaceBar ZIP](https://github.com/fireharp/pace/releases/latest/download/PaceBar-macOS.zip) also includes the app and its install script.
 
 The universal app requires macOS 13 or newer. It uses an ad-hoc signature and has no Apple notarization. To build it locally:
 
