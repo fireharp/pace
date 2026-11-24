@@ -294,13 +294,3 @@ func TestUpdateHooksFileSymlink(t *testing.T) {
 		t.Fatal("want error for a dangling link")
 	}
 }
-
-// Hooks gov (pace's old name) installed are still pace's, so --apply
-// replaces them and --remove takes them out.
-func TestIsPaceHookRecognisesGovHooks(t *testing.T) {
-	for _, c := range []string{"/usr/local/bin/gov hook claude-session-start --quiet", "'/Users/me/bin/gov' hook codex-pre-tool-use", "gov hook claude-pre-tool-use"} {
-		if !IsPaceHook(c) {
-			t.Errorf("IsPaceHook(%q) = false", c)
-		}
-	}
-}

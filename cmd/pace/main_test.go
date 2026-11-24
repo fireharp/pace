@@ -48,11 +48,6 @@ func newTestEnv(t *testing.T) *testEnv {
 	t.Setenv("PACE_SHIM_DISABLE", "")
 	t.Setenv("PACE_STATUS_FILE", "")
 	t.Setenv("CLAUDE_ENV_FILE", "")
-	for _, kv := range os.Environ() {
-		if k, _, _ := strings.Cut(kv, "="); strings.HasPrefix(k, "GOV_") {
-			t.Setenv(k, "") // no fallback from a real gov install
-		}
-	}
 	te.out, te.err = &bytes.Buffer{}, &bytes.Buffer{}
 	te.c = &cli{stdin: strings.NewReader(""), stdout: te.out, stderr: te.err, env: os.Getenv, exe: "/opt/pace/bin/pace"}
 	// Never run launchctl/systemctl from tests.

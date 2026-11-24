@@ -11,14 +11,6 @@ plist=$HOME/Library/LaunchAgents/$label.plist
 dest=$HOME/Applications/PaceBar.app
 uid=$(id -u)
 
-# Before the rename this app was GovBar (agent com.gov.bar): remove it.
-if [ -e "$HOME/Library/LaunchAgents/com.gov.bar.plist" ] || [ -e "$HOME/Applications/GovBar.app" ]; then
-	launchctl bootout "gui/$uid/com.gov.bar" 2>/dev/null || true
-	rm -f "$HOME/Library/LaunchAgents/com.gov.bar.plist"
-	rm -rf "$HOME/Applications/GovBar.app"
-	echo "removed the old GovBar"
-fi
-
 if [ "${1:-}" = "--uninstall" ]; then
 	launchctl bootout "gui/$uid/$label" 2>/dev/null || true
 	rm -f "$plist"

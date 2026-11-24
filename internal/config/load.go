@@ -10,14 +10,13 @@ import (
 	"strings"
 
 	"github.com/BurntSushi/toml"
-	"github.com/fireharp/pace/internal/envcompat"
 )
 
 // getenvFunc abstracts os.Getenv so tests can resolve against a fake
 // environment without mutating the process environment.
 type getenvFunc func(string) string
 
-var osEnv getenvFunc = envcompat.Getenv
+var osEnv getenvFunc = os.Getenv
 
 // userHome returns $HOME (from env), falling back to os.UserHomeDir.
 func userHome(env getenvFunc) (string, error) {

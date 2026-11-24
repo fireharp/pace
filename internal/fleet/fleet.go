@@ -41,9 +41,6 @@ type Peer struct {
 	// ~/bin, ~/go/bin, /opt/homebrew/bin, /usr/local/bin). A leading ~/ is
 	// the remote home.
 	Pace string `toml:"pace,omitempty" json:"pace,omitempty"`
-	// LegacyPace is the same setting under its old key, gov, from fleet
-	// files written before the rename. Load moves it into Pace.
-	LegacyPace string `toml:"gov,omitempty" json:"-"`
 	// SSHOptions are extra ssh arguments (e.g. ["-p", "2222"]).
 	SSHOptions []string `toml:"ssh_options,omitempty" json:"ssh_options,omitempty"`
 	// Container makes the peer a container on the SSH host: pace runs inside
@@ -181,14 +178,6 @@ func Load(path string) (File, error) {
 	}
 	if und := md.Undecoded(); len(und) > 0 {
 		return f, fmt.Errorf("%s: unknown key %q", path, und[0].String())
-	}
-	for i := range f.Peers {
-		if p := &f.Peers[i]; p.LegacyPace != "" {
-			if p.Pace == "" {
-				p.Pace = p.LegacyPace
-			}
-			p.LegacyPace = ""
-		}
 	}
 	if err := f.Validate(); err != nil {
 		return f, fmt.Errorf("%s: %w", path, err)

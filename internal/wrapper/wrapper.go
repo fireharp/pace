@@ -38,7 +38,6 @@ import (
 
 	"github.com/fireharp/pace/internal/client"
 	"github.com/fireharp/pace/internal/config"
-	"github.com/fireharp/pace/internal/envcompat"
 	"github.com/fireharp/pace/internal/platform"
 	"github.com/fireharp/pace/internal/proto"
 	"github.com/fireharp/pace/internal/units"
@@ -828,8 +827,15 @@ func (r *runner) reraise(sig syscall.Signal) int {
 
 // --- helpers ---------------------------------------------------------------
 
-// getenv looks key up in env; PACE_* keys fall back to their old GOV_* names.
-func getenv(env []string, key string) string { return envcompat.Lookup(env, key) }
+// getenv looks up key in env. The last entry for a key wins.
+func getenv(env []string, key string) string {
+	for i := len(env) - 1; i >= 0; i-- {
+		if k, v, ok := strings.Cut(env[i], "="); ok && k == key {
+			return v
+		}
+	}
+	return ""
+}
 
 // setenv returns env with key=val, replacing every existing key entry.
 func setenv(env []string, key, val string) []string {

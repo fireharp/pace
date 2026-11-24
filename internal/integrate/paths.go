@@ -4,8 +4,6 @@ import (
 	"os"
 	"path/filepath"
 	"runtime"
-
-	"github.com/fireharp/pace/internal/envcompat"
 )
 
 // Label is the launchd label and the base name of the systemd unit.
@@ -20,9 +18,9 @@ type Env func(string) string
 
 func (e Env) get(k string) string {
 	if e == nil {
-		return envcompat.Getenv(k)
+		return os.Getenv(k)
 	}
-	return envcompat.Wrap(e)(k)
+	return e(k)
 }
 
 // MapEnv returns an Env backed by m.

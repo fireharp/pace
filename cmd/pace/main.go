@@ -18,7 +18,6 @@ import (
 	"strings"
 
 	"github.com/fireharp/pace/internal/config"
-	"github.com/fireharp/pace/internal/envcompat"
 	"github.com/fireharp/pace/internal/integrate"
 	"github.com/fireharp/pace/internal/proto"
 )
@@ -46,7 +45,7 @@ type cli struct {
 }
 
 func newCLI() *cli {
-	return &cli{stdin: os.Stdin, stdout: os.Stdout, stderr: os.Stderr, env: envcompat.Getenv}
+	return &cli{stdin: os.Stdin, stdout: os.Stdout, stderr: os.Stderr, env: os.Getenv}
 }
 
 func main() { os.Exit(newCLI().main(os.Args[1:])) }
@@ -68,7 +67,6 @@ func init() {
 		{"daemon", "run the governor daemon in the foreground", (*cli).cmdDaemon, false},
 		{"install", "install the daemon as a supervised per-user service", (*cli).cmdInstall, false},
 		{"uninstall", "stop and remove the supervised service", (*cli).cmdUninstall, false},
-		{"migrate", "move an install of gov (the old name) over to pace", (*cli).cmdMigrate, false},
 		{"shims", "manage PATH shims that route heavy commands through pace run", (*cli).cmdShims, false},
 		{"fleet", "one view of pace on all your machines (over ssh; optional)", (*cli).cmdFleet, false},
 		{"hook", "Claude Code and Codex hook handlers", (*cli).cmdHook, false},

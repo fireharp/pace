@@ -35,8 +35,7 @@ ACC_REPO=$(cd "$ACC_DIR/../.." && pwd)
 
 # A governed parent must not turn our pace run calls into pass-throughs, and
 # stray overrides must not leak into the isolated daemons.
-# Every PACE_* and the legacy GOV_* names (envcompat falls back to them).
-for _v in $(env | sed -n 's/^\(\(PACE\|GOV\)_[A-Za-z0-9_]*\)=.*/\1/p'); do
+for _v in $(env | sed -n 's/^\(PACE_[A-Za-z0-9_]*\)=.*/\1/p'); do
 	unset "$_v" 2>/dev/null || true
 done
 unset _v

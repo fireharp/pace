@@ -91,13 +91,12 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/fireharp/pace/internal/envcompat"
 	"golang.org/x/sys/unix"
 )
 
 func init() {
 	newNative = func() (Backend, error) {
-		o, err := LinuxOptionsFromEnv(envcompat.Getenv)
+		o, err := LinuxOptionsFromEnv(os.Getenv)
 		if err != nil {
 			return nil, err
 		}
@@ -105,7 +104,7 @@ func init() {
 	}
 	quickPressure = linuxQuickPressure
 	newContainersAt = func(base string) (JobContainer, error) {
-		o, err := LinuxOptionsFromEnv(envcompat.Getenv)
+		o, err := LinuxOptionsFromEnv(os.Getenv)
 		if err != nil {
 			return nil, err
 		}
@@ -453,7 +452,7 @@ func linuxQuickPressure() int {
 			cgRoot = mp
 		}
 	}
-	o, _ := LinuxOptionsFromEnv(envcompat.Getenv)
+	o, _ := LinuxOptionsFromEnv(os.Getenv)
 	ms, err := sampleMem(&buf, procRoot, cgRoot, o.CgroupMemLimit)
 	if err != nil {
 		return 0
