@@ -265,8 +265,6 @@ What an agent should do with it:
 
 ## 6. Environment variables
 
-pace was called gov before. Each setting below that pace reads also falls back to its old `GOV_*` name when the `PACE_*` one is unset, so existing setups keep working. The per-job variables `PACE_JOB_ID` and `PACE_STATUS_FILE` have no fallback.
-
 | Variable | Read by | Meaning |
 | --- | --- | --- |
 | `PACE_JOB_ID` | Set by `pace run` on the command | The job id (`failopen-<pid>` for a fail-open run, which no daemon knows). Nested `pace run` and PATH shims see it and pass straight through. The daemon also uses it to attribute escaped descendants |

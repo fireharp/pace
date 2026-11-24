@@ -30,7 +30,6 @@ import (
 	"github.com/fireharp/pace/internal/attrib"
 	"github.com/fireharp/pace/internal/config"
 	"github.com/fireharp/pace/internal/dlog"
-	"github.com/fireharp/pace/internal/envcompat"
 	"github.com/fireharp/pace/internal/platform"
 	"github.com/fireharp/pace/internal/policy"
 	"github.com/fireharp/pace/internal/proto"
@@ -321,7 +320,7 @@ func normalizeConfig(c config.Resolved) config.Resolved {
 }
 
 func defaultHome() string {
-	if h := envcompat.Getenv("PACE_HOME"); h != "" {
+	if h := os.Getenv("PACE_HOME"); h != "" {
 		return h
 	}
 	uh, err := os.UserHomeDir()

@@ -342,26 +342,6 @@ func TestParseStatusWithBanner(t *testing.T) {
 	}
 }
 
-func TestLoadLegacyGovKey(t *testing.T) {
-	path := filepath.Join(t.TempDir(), "fleet.toml")
-	os.WriteFile(path, []byte("[[peer]]\nname = \"mini\"\nssh = \"mini\"\ngov = \"~/.local/bin/gov\"\n\n[[peer]]\nname = \"b\"\nssh = \"b\"\n"), 0o600)
-	f, err := Load(path)
-	if err != nil {
-		t.Fatal(err)
-	}
-	if f.Peers[0].Pace != "~/.local/bin/gov" || f.Peers[0].LegacyPace != "" || f.Peers[1].Pace != "" {
-		t.Fatalf("peers = %+v", f.Peers)
-	}
-	// Saving writes the new key only.
-	if err := Save(path, f); err != nil {
-		t.Fatal(err)
-	}
-	b, _ := os.ReadFile(path)
-	if strings.Contains(string(b), "\ngov =") || !strings.Contains(string(b), `pace = "~/.local/bin/gov"`) {
-		t.Fatalf("saved:\n%s", b)
-	}
-}
-
 // A container peer runs `docker exec [-u USER] CONTAINER pace ARGS` on the
 // ssh host, in any login shell; a fake docker checks the exact argv.
 func TestContainerPeerCommand(t *testing.T) {

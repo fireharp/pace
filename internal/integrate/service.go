@@ -137,21 +137,17 @@ func SystemdUnit(s ServiceSpec) string {
 }
 
 // PlistPath is ~/Library/LaunchAgents/com.pace.daemon.plist.
-func PlistPath(home string) string { return plistPathFor(home, Label) }
-
-func plistPathFor(home, label string) string {
-	return filepath.Join(home, "Library", "LaunchAgents", label+".plist")
+func PlistPath(home string) string {
+	return filepath.Join(home, "Library", "LaunchAgents", Label+".plist")
 }
 
 // UnitPath is $XDG_CONFIG_HOME/systemd/user/pace.service (default ~/.config).
-func UnitPath(home string, env Env) string { return unitPathFor(home, env, UnitName) }
-
-func unitPathFor(home string, env Env, unit string) string {
+func UnitPath(home string, env Env) string {
 	base := env.get("XDG_CONFIG_HOME")
 	if base == "" {
 		base = filepath.Join(home, ".config")
 	}
-	return filepath.Join(base, "systemd", "user", unit)
+	return filepath.Join(base, "systemd", "user", UnitName)
 }
 
 // Runner runs an external command and returns its combined output. Tests
@@ -237,9 +233,7 @@ func quoteAll(args []string) []string {
 
 func (i *Installer) target() string { return "gui/" + strconv.Itoa(i.UID) }
 
-func (i *Installer) service() string { return i.serviceFor(Label) }
-
-func (i *Installer) serviceFor(label string) string { return i.target() + "/" + label }
+func (i *Installer) service() string { return i.target() + "/" + Label }
 
 // ServiceState is what Status reports.
 type ServiceState struct {
@@ -368,10 +362,8 @@ func (i *Installer) mkdir(dir string) error {
 	return os.MkdirAll(dir, 0o755)
 }
 
-func (i *Installer) launchdLoaded() bool { return i.launchdLoadedAs(Label) }
-
-func (i *Installer) launchdLoadedAs(label string) bool {
-	_, err := i.query("launchctl", "print", i.serviceFor(label))
+func (i *Installer) launchdLoaded() bool {
+	_, err := i.query("launchctl", "print", i.service())
 	return err == nil
 }
 
@@ -472,35 +464,29 @@ func (i *Installer) installSystemd(s ServiceSpec) error {
 
 // Uninstall stops the daemon and removes the service file. Logs, state and
 // config are kept.
-func (i *Installer) Uninstall() error { return i.uninstall(Label, UnitName) }
-
-// UninstallLegacy stops and removes the service gov (pace's old name)
-// installed: launchd label com.gov.daemon or systemd unit gov.service.
-func (i *Installer) UninstallLegacy() error { return i.uninstall(LegacyLabel, LegacyUnitName) }
-
-func (i *Installer) uninstall(label, unit string) error {
+func (i *Installer) Uninstall() error {
 	switch i.GOOS {
 	case "darwin":
-		path := plistPathFor(i.Home, label)
-		loaded := i.launchdLoadedAs(label)
+		path := PlistPath(i.Home)
+		loaded := i.launchdLoaded()
 		if !loaded && !fileExists(path) {
 			fmt.Fprintln(i.out(), "not installed")
 			return nil
 		}
 		if loaded {
-			if _, err := i.run("launchctl", "bootout", i.serviceFor(label)); err != nil {
+			if _, err := i.run("launchctl", "bootout", i.service()); err != nil {
 				return err
 			}
 		}
 		return i.remove(path)
 	case "linux":
-		path := unitPathFor(i.Home, i.Env, unit)
+		path := UnitPath(i.Home, i.Env)
 		if !fileExists(path) {
 			fmt.Fprintln(i.out(), "not installed")
 			return nil
 		}
 		// disable may fail if the unit was never enabled; keep going.
-		if _, err := i.run("systemctl", "--user", "disable", "--now", unit); err != nil {
+		if _, err := i.run("systemctl", "--user", "disable", "--now", UnitName); err != nil {
 			fmt.Fprintf(i.out(), "warning: %v\n", err)
 		}
 		if err := i.remove(path); err != nil {

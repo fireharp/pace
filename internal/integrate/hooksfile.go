@@ -38,9 +38,8 @@ func HooksFile(h Harness, env Env) string {
 // contain such a call among other things are not pace's.
 var paceHookRE = regexp.MustCompile(`^\s*(?:'[^']*'|"(?:[^"\\]|\\.)*"|\\.|[^\s'"\\])+\s+hook\s+(claude|codex)-(session-start|pre-tool-use)(\s+--quiet)?\s*$`)
 
-// IsPaceHook reports whether a hook command is one of pace's. It matches by
-// shape, not by binary name, so hooks gov (pace's old name) installed are
-// recognised too and can be replaced or removed.
+// IsPaceHook reports whether a hook command matches pace's hook syntax.
+// The executable can have a custom name or path.
 func IsPaceHook(command string) bool { return paceHookRE.MatchString(command) }
 
 // object is a JSON object that keeps its key order; values stay raw.

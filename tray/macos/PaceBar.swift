@@ -225,7 +225,7 @@ func stateColor(_ s: String) -> Color {
 func findPace() -> String? {
     let env = ProcessInfo.processInfo.environment
     var candidates: [String] = []
-    if let g = env["PACE_BIN"] ?? env["GOV_BIN"], !g.isEmpty { candidates.append(g) }  // GOV_BIN: set by the GovBar agent before the rename
+    if let pace = env["PACE_BIN"], !pace.isEmpty { candidates.append(pace) }
     let home = NSHomeDirectory()
     candidates += ["\(home)/.local/bin/pace", "\(home)/bin/pace", "\(home)/go/bin/pace", "/opt/homebrew/bin/pace", "/usr/local/bin/pace"]
     return candidates.first { FileManager.default.isExecutableFile(atPath: $0) }

@@ -15,10 +15,6 @@ import (
 // carry it are ever overwritten, removed, or skipped during PATH lookup.
 const ShimMarker = "# pace-shim v1"
 
-// LegacyShimMarker marked shims written by gov, the name pace had before. They
-// are still recognised, so 'pace shims uninstall' and 'pace migrate' remove them.
-const LegacyShimMarker = "# gov-shim v1"
-
 // ShellQuote quotes s for POSIX sh using single quotes.
 func ShellQuote(s string) string {
 	if s != "" && strings.IndexFunc(s, func(r rune) bool {
@@ -87,7 +83,7 @@ func IsShim(path string) bool {
 	defer f.Close()
 	buf := make([]byte, 256)
 	n, _ := io.ReadFull(f, buf)
-	return bytes.Contains(buf[:n], []byte(ShimMarker)) || bytes.Contains(buf[:n], []byte(LegacyShimMarker))
+	return bytes.Contains(buf[:n], []byte(ShimMarker))
 }
 
 // ShimOptions configure InstallShims.

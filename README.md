@@ -56,25 +56,6 @@ Re-running it upgrades in place. `--dry-run` shows what it would write and run, 
 
 Stamp a version at build time with `go build -ldflags "-X main.version=v0.1.0" ./cmd/pace`.
 
-### Moving from gov
-
-pace used to be called gov. To move an existing gov install over, build `pace` and run:
-
-```sh
-pace migrate            # prints the plan; changes nothing
-pace migrate --apply    # does it
-```
-
-`pace migrate --apply` takes these steps, which you can also do by hand:
-
-1. Remove the old service: `gov uninstall`, or `launchctl bootout gui/$(id -u)/com.gov.daemon` and delete `~/Library/LaunchAgents/com.gov.daemon.plist` (Linux: `systemctl --user disable --now gov.service` and delete the unit).
-2. Copy `~/.config/gov/config.toml` and `fleet.toml` to `~/.config/pace/`.
-3. Replace the shims: `pace shims uninstall --dir ~/.gov/shims`, then `pace shims install`.
-4. Replace the hooks: `pace integrate claude --apply` and `pace integrate codex --apply`. Hooks are recognised by their shape, not by binary name, so these commands swap the old `gov hook ...` entries for `pace hook ...` and keep your other hooks. `--remove` takes them out instead. Codex asks you to review the changed hooks once (`/hooks`).
-5. Install the new service with the old mode: `pace install --mode observe`.
-
-Old state and logs (`~/Library/Application Support/gov`, `~/Library/Logs/gov`, `~/Library/Caches/gov`, or `~/.local/state/gov` on Linux) are left alone; delete them when pace runs well. `GOV_*` environment variables still work as fallbacks for their `PACE_*` names, and a `gov = "..."` peer path in `fleet.toml` is still read. Rename them when you can. A fleet peer that still runs gov shows as `no-pace` until it is migrated too, or until its peer entry names the gov binary (`pace fleet add <name> <ssh> --pace ~/.local/bin/gov`). For the menu bar app, `tray/macos/install.sh` removes the old GovBar.
-
 ### Linux specifics
 
 Linux uses the same binary, contract and policy as macOS. Only sensing and enforcement differ:
