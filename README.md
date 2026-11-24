@@ -1,6 +1,39 @@
-# Pace: a resource governor for agent workloads
+# Pace
 
-pace (the CLI; "Pace" in the menu bar) keeps one machine from getting stuck when agents run heavy work such as builds, test suites, browsers and models. It is one static Go binary that serves as both daemon and CLI.
+Pace keeps agent builds, tests, browsers, and models from exhausting your machine. It can queue, slow, or stop jobs when resources run low.
+
+## Quick setup
+
+One binary for macOS and Linux. The installer selects your architecture and checks the download.
+
+```sh
+# Install the CLI
+curl -fsSL https://github.com/fireharp/pace/releases/latest/download/install.sh | sh
+export PATH="$HOME/.local/bin:$PATH"
+
+# Start in observe mode and check your machine
+pace install --mode observe
+pace status
+
+# Run a job through Pace (from a Go project)
+pace run -- go test ./...
+```
+
+Replace `go test ./...` with your own build or test command. To let Pace queue or stop heavy jobs, run `pace install --mode enforce`. Mac users can also [set up the menu bar app](#menu-bar-icon-macos).
+
+<details>
+<summary>Download a standalone binary</summary>
+
+| System | Apple silicon / ARM64 | Intel / AMD64 |
+| --- | --- | --- |
+| macOS | [pace_darwin_arm64](https://github.com/fireharp/pace/releases/latest/download/pace_darwin_arm64) | [pace_darwin_amd64](https://github.com/fireharp/pace/releases/latest/download/pace_darwin_amd64) |
+| Linux | [pace_linux_arm64](https://github.com/fireharp/pace/releases/latest/download/pace_linux_arm64) | [pace_linux_amd64](https://github.com/fireharp/pace/releases/latest/download/pace_linux_amd64) |
+
+For manual installation, run `mkdir -p ~/.local/bin`, then `install -m 755 <downloaded-file> ~/.local/bin/pace`. Continue from the `export PATH` line above. Archives, checksums and licenses are on the [releases page](https://github.com/fireharp/pace/releases/latest).
+
+</details>
+
+## How Pace works
 
 - **Admission.** A job starts only when its expected memory footprint fits the current headroom. Otherwise it queues, and pace says why.
 - **Ladder.** pace informs, then warns, then enforces: throttle, then freeze, then kill, always on the whole process group. A warning that is ignored is always followed by enforcement. At critical pressure the warning and the action happen together.
@@ -10,20 +43,9 @@ pace (the CLI; "Pace" in the menu bar) keeps one machine from getting stuck when
 
 macOS on Apple silicon comes first. It runs as a per-user LaunchAgent with no root, cgo or kernel extension. Linux uses a systemd user unit and the same contract. The agent-facing contract is in [docs/CONTRACT.md](docs/CONTRACT.md); the design decisions are in [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).
 
-## Install
+## Service setup
 
-Download the CLI for macOS or Linux (Apple silicon/ARM64 or Intel/AMD64). The installer checks the archive's SHA-256 and installs `pace` in `~/.local/bin`. Start in observe mode to see what Pace would do.
-
-```sh
-curl -fsSLO https://github.com/fireharp/pace/releases/latest/download/install.sh
-sh install.sh
-export PATH="$HOME/.local/bin:$PATH"
-pace version
-pace install --mode observe
-pace status
-```
-
-For a manual install, download the matching archive and `checksums.txt` from [GitHub Releases](https://github.com/fireharp/pace/releases/latest). To build from a source checkout, run `go build -o ~/.local/bin/pace ./cmd/pace` with the Go version in `go.mod`.
+To build the CLI from source, run `go build -o ~/.local/bin/pace ./cmd/pace` with the Go version in `go.mod`.
 
 `pace install` writes one of these files and starts the daemon:
 
@@ -180,9 +202,11 @@ Peers are stored in `~/.config/pace/fleet.toml`. Add the same peers on each mach
 
 ### Menu bar icon (macOS)
 
-Download `PaceBar-macOS.zip` from the [latest release](https://github.com/fireharp/pace/releases/latest). With the CLI installed, unzip it and run:
+With the CLI installed, download and start PaceBar:
 
 ```sh
+curl -fsSLO https://github.com/fireharp/pace/releases/latest/download/PaceBar-macOS.zip
+unzip -o PaceBar-macOS.zip
 sh PaceBar/install.sh PaceBar/PaceBar.app
 ```
 
