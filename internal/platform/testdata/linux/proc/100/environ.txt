@@ -1,0 +1,5 @@
+PATH=/usr/bin
+XPACE_JOB_ID=nope
+PACE_JOB_ID=job-42
+PACE_JOB_ID=second
+HOME=/home/u

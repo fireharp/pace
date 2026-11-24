@@ -1,0 +1,16 @@
+55d0c0000000-7ffd00000000 ---p 00000000 00:00 0                          [rollup]
+Rss:               10240 kB
+Pss:                8192 kB
+Pss_Dirty:          6000 kB
+Pss_Anon:           5120 kB
+Pss_File:           2560 kB
+Pss_Shmem:           512 kB
+Shared_Clean:       3000 kB
+Shared_Dirty:          0 kB
+Private_Clean:      1000 kB
+Private_Dirty:      6240 kB
+Referenced:        10000 kB
+Anonymous:          6144 kB
+Swap:               2048 kB
+SwapPss:            1536 kB
+Locked:                0 kB

@@ -1,0 +1,8 @@
+pace - (-)  mode=observe  pressure=normal
+memory    capacity 8.0G  avail 6.0G  reserved 0B  reserve 0B  headroom 3.0G
+admitting yes
+suggested concurrency 4
+
+RUNNING (0)
+
+QUEUED (0)

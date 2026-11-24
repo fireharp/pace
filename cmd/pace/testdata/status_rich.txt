@@ -1,0 +1,28 @@
+pace v0.1.0 (darwin)  mode=enforce  pressure=warn (kernel level 2)
+memory    capacity 36.0G  avail 6.0G  reserved 3.0G  reserve 4.5G  headroom 0B  swap 7.7G
+admitting no (pressure, headroom)
+suggested concurrency 1 (browser=1 build=0 test=1)
+system    load 9.25/12 cpus  disk free 120.0G
+
+RUNNING (2)
+ID  CLASS  PRI  USED  PEAK  BUDGET  RESERVED  PROCS  AGE    STAGE      COMMAND
+j3  build  5    5.5G  5.7G  8.0G    6.0G      14     2m30s  throttled  cargo build --release
+j4  test   3    900M  -     2.0G    -         0      4s     -          npm test -- xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx…
+
+QUEUED (1)
+POS  ID  CLASS  PRI  NEED  WAITED  COMMAND
+1    j5  test   5    2.0G  40s     go test ./...
+
+UNMANAGED (top 2 of 2, started outside pace run)
+PGID  COMM           PROCS  USED   PRI  AGE  STAGE
+900   Google Chrome  82     12.0G  2    1h   -
+901   node           3      400M   2    1m   frozen
+
+unmanaged below min_victim (64M): 24 groups, 1.2G in all
+
+WARNINGS (1)
+pace: WARN policy=mem_budget used=5.5G budget=6.0G next=kill in=20s job=j3
+pace: hint: lower parallelism now or the job will be killed
+
+FAULTS (1)
+  sampler: 1 slow sample (12ms)
