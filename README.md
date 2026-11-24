@@ -252,3 +252,7 @@ Point `PACE_HOME` and `PACE_SOCK` at a short temp directory to keep a test daemo
 - `pace install` refuses binaries from `go run`'s temporary build cache, and warns about binaries in temporary directories.
 - `pace integrate` changes a harness settings file only with `--apply` or `--remove`. It keeps everything that is not a pace hook and writes a backup first. `pace hook` never modifies anything. `pace shims` only replaces files that carry its marker.
 - Under memory pressure the daemon stays small: `GOMEMLIMIT=32MiB`, no shelling out on the hot path, and its own pid is never a victim.
+
+## License
+
+[MIT](LICENSE)
