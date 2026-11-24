@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.2.0](https://github.com/fireharp/pace/compare/v0.1.0...v0.2.0) (2026-11-24)
+
+
+### Features
+
+* offer the PaceBar menu bar app during macOS installation ([eda3121](https://github.com/fireharp/pace/commit/eda312129b2292a67ec13e694ab6a50cf801dada))
+
+
+### Bug Fixes
+
+* offer standalone binaries and a copyable quick setup ([d25e65d](https://github.com/fireharp/pace/commit/d25e65db5b8549c0146fbf2e0d88e9ae5317b488))
+
 ## 0.1.0 (2026-11-24)
 
 
